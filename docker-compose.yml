@@ -1,0 +1,26 @@
+services:
+  mlflow:
+    restart: always
+    build:
+      context: mlflow
+    command: server --app-name basic-auth --host 0.0.0.0 --port 5000
+    networks:
+      - dokploy-external
+    volumes:
+      - run_data:/mlruns
+      - artifact_data:/mlartifacts
+      - auth_db:/basic_auth.db
+    environment:
+      - MLFLOW_FLASK_SERVER_SECRET_KEY=${SECRET_KEY}
+
+networks:
+  dokploy-network:
+    external: true
+
+volumes:
+  run_data:
+    driver: local
+  artifact_data:
+    driver: local
+  auth_db:
+    driver: local
